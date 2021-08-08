@@ -11,7 +11,6 @@ class Post {
       'SELECT * FROM post_likes WHERE post_id = $1',
       [post.id]
     );
-    post.username = post.user_id;
 
     post.comments = post_comments.rows;
     post.commentCount = post_comments.rows.length;
@@ -30,6 +29,7 @@ class Post {
     for (let post of posts.rows) {
       await this.addPostCommentsAndLikesToPost(post);
     }
+    console.log(posts);
     return posts.rows;
   }
 
