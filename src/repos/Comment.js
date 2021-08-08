@@ -17,8 +17,8 @@ class Comment {
   }
   static async createComment(body, userId, postId, username) {
     const result = await pool.query(
-      'INSERT INTO post_comments (body,user_id,post_id,username)VALUES($1,$2,$3,$4) RETURNING *',
-      [body, userId, postId, username]
+      'INSERT INTO post_comments (body,user_id,post_id,username,created_at)VALUES($1,$2,$3,$4,$5) RETURNING *',
+      [body, userId, postId, username, new Date().toISOString()]
     );
     const comment = result.rows[0];
     if (comment) {

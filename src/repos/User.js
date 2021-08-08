@@ -4,8 +4,8 @@ class User {
   static async createUser(email, username, password) {
     try {
       const result = await pool.query(
-        'INSERT INTO users (email,username,password)VALUES($1,$2,$3) RETURNING *',
-        [email, username, password]
+        'INSERT INTO users (email,username,password, created_at)VALUES($1,$2,$3,$4) RETURNING *',
+        [email, username, password, new Date().toISOString()]
       );
 
       return result.rows[0];

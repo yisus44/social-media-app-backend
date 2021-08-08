@@ -43,8 +43,8 @@ class Post {
   static async createPost(body, username, userId) {
     //body, the user_id and username of the authr
     const result = await pool.query(
-      'INSERT INTO posts (body,username,user_id)VALUES ($1,$2,$3) RETURNING *',
-      [body, username, userId]
+      'INSERT INTO posts (body, username,user_id,created_at)VALUES ($1,$2,$3,$4) RETURNING *',
+      [body, username, userId, new Date().toISOString()]
     );
 
     const post = result.rows[0];
