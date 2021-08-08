@@ -1,21 +1,23 @@
 const { AuthenticationError, UserInputError } = require('apollo-server');
+const { Like } = require('../../repos/Like');
 
-const Post = require('../../models/Post');
+const { Post } = require('../../repos/Post');
+// const Post = require('../../models/Post');
 const auth = require('../../utils/auth');
 
 const postResolvers = {
   Query: {
     async getPosts() {
       try {
-        const posts = await Post.find().sort({ createdAt: -1 });
+        const posts = await Post.findAll();
         return posts;
       } catch (error) {
-        throw new Error(err);
+        throw new Error(error);
       }
     },
     async getPost(parent, { postId }, context, info) {
       try {
-        const post = await Post.findById(postId);
+        const post = await Post.findPostById(postId);
         if (post) {
           return post;
         } else {
@@ -32,21 +34,16 @@ const postResolvers = {
       if (body.trim() === '') {
         throw new Error('Post body must not be empty');
       }
-      const newPost = new Post({
-        body,
-        user: user.id,
-        username: user.username,
-        createdAt: new Date().toISOString(),
-      });
-      const post = await newPost.save();
-      return post;
+      const newPost = await Post.createPost(body, user.username, user.id);
+      console.log(newPost);
+      return newPost;
     },
     async deletePost(parent, { postId }, context, info) {
       const user = auth(context);
       try {
-        const post = await Post.findById(postId);
+        const post = await Post.findPostById(postId, false);
         if (user.username === post.username) {
-          await post.delete();
+          await Post.deletePostById(postId);
           return 'Post deleted succesfully';
         } else {
           throw new AuthenticationError('Action not allowed');
@@ -56,21 +53,18 @@ const postResolvers = {
       }
     },
     async likePost(parent, { postId }, context) {
-      const { username } = auth(context);
-      const post = await Post.findById(postId);
+      const { id: userId } = auth(context);
+      console.log(userId);
+      const post = await Post.findPostById(postId, false);
       if (post) {
-        if (post.likes.find((like) => like.username === username)) {
-          //post already like,unlike it
-          post.likes = post.likes.filter((like) => like.username !== username);
-        } else {
-          //not liked,like post
-          post.likes.push({
-            username,
-            createdAt: new Date().toISOString(),
-          });
+        const hasBeenLiked = await Like.findByUserAndPost(userId, postId);
+        if (hasBeenLiked) {
+          Like.dislikePost(userId, postId);
+        } else if (!hasBeenLiked) {
+          Like.likePost(userId, postId);
         }
-        await post.save();
-        return post;
+        const updatedPost = await Post.findPostById(postId);
+        return updatedPost;
       } else {
         throw new UserInputError('Post not found');
       }

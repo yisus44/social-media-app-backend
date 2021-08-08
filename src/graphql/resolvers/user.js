@@ -1,4 +1,4 @@
-const User = require('../../models/User');
+const { User } = require('../../repos/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { UserInputError } = require('apollo-server');
@@ -27,7 +27,7 @@ const userResolver = {
       context,
       info
     ) {
-      const existingUser = await User.findOne({ username });
+      const existingUser = await User.findByUsername(username);
       if (existingUser) {
         throw new UserInputError('Username is taken', {
           errors: {
@@ -46,25 +46,18 @@ const userResolver = {
       }
 
       password = await bcrypt.hash(password, 12);
-      const newUser = new User({
-        email,
-        username,
-        password,
-        createdAt: new Date().toISOString(),
-      });
-
-      const res = await newUser.save();
-      const token = generateJWT(res);
+      const newUser = await User.createUser(email, username, password);
+      const token = generateJWT(newUser);
 
       return {
-        ...res._doc,
-        id: res._id,
+        ...newUser,
+        createdAt: newUser.created_at,
         token,
       };
     },
     async login(parent, { username, password }, context, info) {
       const { errors, isValid } = validateLoginInput(username, password);
-      const existingUser = await User.findOne({ username });
+      const existingUser = await User.findByUsername(username);
 
       if (!isValid) {
         throw new UserInputError('Errors', { errors });
@@ -82,8 +75,8 @@ const userResolver = {
 
       const token = generateJWT(existingUser);
       return {
-        ...existingUser._doc,
-        id: existingUser._id,
+        ...existingUser,
+        createdAt: existingUser.created_at,
         token,
       };
     },
