@@ -53,7 +53,7 @@ const postResolvers = {
       }
     },
     async likePost(parent, { postId }, context) {
-      const { id: userId } = auth(context);
+      const { id: userId, username } = auth(context);
       console.log(userId);
       const post = await Post.findPostById(postId, false);
       if (post) {
@@ -61,7 +61,7 @@ const postResolvers = {
         if (hasBeenLiked) {
           Like.dislikePost(userId, postId);
         } else if (!hasBeenLiked) {
-          Like.likePost(userId, postId);
+          Like.likePost(userId, postId, username);
         }
         const updatedPost = await Post.findPostById(postId);
         return updatedPost;
