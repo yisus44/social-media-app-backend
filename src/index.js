@@ -12,10 +12,9 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: ({ req, pubSub }) => ({ req }),
-  cors: false,
 });
 
 const PORT = process.env.PORT || 5000;
 server.listen({ port: PORT }).then((res) => {
-  console.log(`Server up and running at ${res.url}!!`);
+  console.log(`Server up and running at ${res.url}`);
 });
