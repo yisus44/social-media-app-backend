@@ -29,7 +29,7 @@ class Post {
     for (let post of posts.rows) {
       await this.addPostCommentsAndLikesToPost(post);
     }
-    console.log(posts);
+    posts;
     return posts.rows;
   }
 

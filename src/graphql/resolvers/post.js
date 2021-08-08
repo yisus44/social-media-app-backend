@@ -35,7 +35,7 @@ const postResolvers = {
         throw new Error('Post body must not be empty');
       }
       const newPost = await Post.createPost(body, user.username, user.id);
-      console.log(newPost);
+
       return newPost;
     },
     async deletePost(parent, { postId }, context, info) {
