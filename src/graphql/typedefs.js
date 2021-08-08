@@ -23,14 +23,14 @@ const typeDefs = gql`
 
   type Comment {
     id: ID!
-    createdAt: String!
+    createdAt: String
     username: String!
     body: String!
   }
 
   type Like {
     id: ID!
-    createdAt: String!
+    createdAt: String
     username: String!
   }
 
