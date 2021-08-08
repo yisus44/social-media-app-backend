@@ -17,19 +17,20 @@ const typeDefs = gql`
     email: String!
     token: String!
     username: String!
+    password: String!
     createdAt: String!
   }
 
   type Comment {
     id: ID!
-    createdAt: String!
+    createdAt: String
     username: String!
     body: String!
   }
 
   type Like {
     id: ID!
-    createdAt: String!
+    createdAt: String
     username: String!
   }
 
