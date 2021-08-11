@@ -59,6 +59,17 @@ class Post {
     return post;
   }
 
+  static async updatePostById(id, body) {
+    ///
+    const result = await pool.query(
+      'UPDATE posts SET body=$1 WHERE id=$2 RETURNING *',
+      [body, id]
+    );
+    await this.addPostCommentsAndLikesToPost(result.rows[0]);
+
+    return result.rows[0];
+  }
+
   static async deletePostById(id) {
     const result = await pool.query(
       'DELETE FROM posts WHERE id = $1 RETURNING *',

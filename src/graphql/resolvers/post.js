@@ -38,10 +38,34 @@ const postResolvers = {
 
       return newPost;
     },
+    async updatePost(parent, { postId, body }, context, info) {
+      const user = auth(context);
+
+      if (body.trim() === '') {
+        throw new Error('Post body must not be empty');
+      }
+      try {
+        const post = await Post.findPostById(postId, false);
+        if (!post) {
+          throw new UserInputError('Post not found');
+        }
+        if (user.username === post.username) {
+          const updatedPost = await Post.updatePostById(postId, body);
+          return updatedPost;
+        } else {
+          throw new AuthenticationError('Action not allowed');
+        }
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
     async deletePost(parent, { postId }, context, info) {
       const user = auth(context);
       try {
         const post = await Post.findPostById(postId, false);
+        if (!post) {
+          throw new UserInputError('Post not found');
+        }
         if (user.username === post.username) {
           await Post.deletePostById(postId);
           return 'Post deleted succesfully';
