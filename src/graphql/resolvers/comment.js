@@ -3,6 +3,7 @@ const { UserInputError, AuthenticationError } = require('apollo-server');
 const auth = require('../../utils/auth');
 const { Post } = require('../../repos/Post');
 const { Comment } = require('../../repos/Comment');
+const { Like } = require('../../repos/Like');
 
 const commentResolver = {
   Mutation: {
@@ -42,6 +43,24 @@ const commentResolver = {
       } catch (error) {
         console.log(error);
         throw new Error(error);
+      }
+    },
+    async likeComment(parent, { commentId }, context) {
+      const { id: userId, username } = auth(context);
+      const comment = await Comment.findCommentById(commentId, false);
+
+      if (comment) {
+        const hasBeenLiked = await Like.findByUserAndComment(userId, commentId);
+        if (hasBeenLiked) {
+          Like.dislikeComment(userId, commentId, username);
+        } else if (!hasBeenLiked) {
+          Like.likeComment(userId, commentId, username);
+        }
+        const { post_id } = comment;
+        const updatedPost = await Post.findPostById(post_id);
+        return updatedPost;
+      } else {
+        throw new UserInputError('Post not found');
       }
     },
   },

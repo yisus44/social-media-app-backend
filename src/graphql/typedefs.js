@@ -49,6 +49,7 @@ const typeDefs = gql`
     createComment(postId: ID!, body: String!): Post!
     deleteComment(postId: ID!, commentId: ID!): Post!
     likePost(postId: ID!): Post!
+    likeComment(commentId: ID!): Post!
   }
 
   input RegisterInput {
