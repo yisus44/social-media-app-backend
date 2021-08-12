@@ -29,10 +29,27 @@ class Post {
     for (let post of posts.rows) {
       await this.addPostCommentsAndLikesToPost(post);
     }
-    posts;
+
     return posts.rows;
   }
+  static async findMostPopulars() {
+    const posts = await pool.query(
+      `
+      SELECT posts.*, COUNT(DISTINCT(post_comments.id)) + COUNT(DISTINCT(post_likes.id)) AS points 
+      FROM posts
+      LEFT JOIN post_comments ON posts.id=post_comments.post_id
+      LEFT JOIN post_likes ON posts.id=post_likes.post_id
+      GROUP BY posts.id
+      ORDER BY points DESC
+      LIMIT 3
+      `
+    );
+    for (let post of posts.rows) {
+      await this.addPostCommentsAndLikesToPost(post);
+    }
 
+    return posts.rows;
+  }
   static async findPostById(id, needExtraInfo = true) {
     const post = await pool.query('SELECT * FROM posts WHERE id = $1', [id]);
     if (needExtraInfo) {

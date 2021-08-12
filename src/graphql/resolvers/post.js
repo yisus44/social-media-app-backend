@@ -6,7 +6,7 @@ const auth = require('../../utils/auth');
 
 const postResolvers = {
   Query: {
-    async getPosts() {
+    async getPosts(parent, args, context, info) {
       try {
         const posts = await Post.findAll();
         return posts;
@@ -22,6 +22,14 @@ const postResolvers = {
         } else {
           throw new Error('Post not found');
         }
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
+    async getMostPopularPosts(parent, args, context, info) {
+      try {
+        const posts = await Post.findMostPopulars();
+        return posts;
       } catch (error) {
         throw new Error(error);
       }

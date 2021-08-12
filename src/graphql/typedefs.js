@@ -36,6 +36,7 @@ const typeDefs = gql`
 
   type Query {
     getPosts: [Post]
+    getMostPopularPosts: [Post]
     getPost(postId: ID!): Post
   }
 
