@@ -1,8 +1,6 @@
 const { UserInputError, AuthenticationError } = require('apollo-server');
 
-//const Post = require('../../models/Post');
 const auth = require('../../utils/auth');
-
 const { Post } = require('../../repos/Post');
 const { Comment } = require('../../repos/Comment');
 
@@ -18,7 +16,6 @@ const commentResolver = {
       const post = await Post.findPostById(postId, false);
 
       if (post) {
-        //TODO: refactor to make a table for comments
         await Comment.createComment(body, id, postId, username);
         const updatedPost = await Post.findPostById(postId);
         return updatedPost;

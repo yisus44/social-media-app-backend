@@ -1,8 +1,7 @@
 const { AuthenticationError, UserInputError } = require('apollo-server');
-const { Like } = require('../../repos/Like');
 
+const { Like } = require('../../repos/Like');
 const { Post } = require('../../repos/Post');
-// const Post = require('../../models/Post');
 const auth = require('../../utils/auth');
 
 const postResolvers = {

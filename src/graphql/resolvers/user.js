@@ -1,7 +1,8 @@
-const { User } = require('../../repos/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { UserInputError } = require('apollo-server');
+
+const { User } = require('../../repos/User');
 const {
   validateRegisterInput,
   validateLoginInput,

@@ -1,7 +1,7 @@
 const dotenv = require('dotenv');
-dotenv.config();
-
 const { Pool } = require('pg');
+
+dotenv.config();
 
 const postgresOptions = {
   user: process.env.PG_USER,
