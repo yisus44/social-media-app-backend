@@ -20,11 +20,10 @@ class Post {
     post.likesCount = post_likes.rows.length;
     let i = 0;
     for (let comment of post.comments) {
+      const commentsLikes = await Comment.getCommentsLikes(comment.id);
+      post.comments[i].likeCount = commentsLikes.length;
       console.log();
-      post.comments[i].likeCount = Number(
-        await Comment.getCommentsLikes(comment.id).length
-      );
-      post.comments[i].likes = await Comment.getCommentsLikes(comment.id);
+      post.comments[i].likes = commentsLikes;
 
       i++;
     }
