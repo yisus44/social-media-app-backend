@@ -22,8 +22,10 @@ class Post {
     for (let comment of post.comments) {
       console.log();
       post.comments[i].likeCount = Number(
-        await Comment.getCommentsLikes(comment.id)
+        await Comment.getCommentsLikes(comment.id).length
       );
+      post.comments[i].likes = await Comment.getCommentsLikes(comment.id);
+
       i++;
     }
 

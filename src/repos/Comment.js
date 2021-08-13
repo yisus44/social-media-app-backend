@@ -32,11 +32,11 @@ class Comment {
 
   static async getCommentsLikes(commentId) {
     const result = await pool.query(
-      'SELECT COUNT(*) FROM comments_likes WHERE comment_id=$1',
+      'SELECT * FROM comments_likes WHERE comment_id=$1',
       [commentId]
     );
 
-    return result.rows[0].count;
+    return result.rows;
   }
 
   static async deleteComment(commentId) {
