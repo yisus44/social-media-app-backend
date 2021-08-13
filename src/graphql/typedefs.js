@@ -26,6 +26,8 @@ const typeDefs = gql`
     createdAt: String
     username: String!
     body: String!
+    likes: [Like]
+    likeCount: Int
   }
 
   type Like {

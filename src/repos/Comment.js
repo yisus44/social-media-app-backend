@@ -30,6 +30,15 @@ class Comment {
     return comment;
   }
 
+  static async getCommentsLikes(commentId) {
+    const result = await pool.query(
+      'SELECT COUNT(*) FROM comments_likes WHERE comment_id=$1',
+      [commentId]
+    );
+
+    return result.rows[0].count;
+  }
+
   static async deleteComment(commentId) {
     const result = await pool.query(
       'DELETE FROM post_comments WHERE id = $1 RETURNING *',

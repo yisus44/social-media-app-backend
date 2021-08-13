@@ -1,4 +1,5 @@
 const pool = require('../database/pool');
+const { Comment } = require('./Comment');
 
 class Post {
   static async addPostCommentsAndLikesToPost(post) {
@@ -17,6 +18,14 @@ class Post {
 
     post.likes = post_likes.rows;
     post.likesCount = post_likes.rows.length;
+    let i = 0;
+    for (let comment of post.comments) {
+      console.log();
+      post.comments[i].likeCount = Number(
+        await Comment.getCommentsLikes(comment.id)
+      );
+      i++;
+    }
 
     post.createdAt = post.created_at;
     post.updatedAt = post.updated_at;

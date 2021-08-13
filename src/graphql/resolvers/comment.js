@@ -48,16 +48,17 @@ const commentResolver = {
     async likeComment(parent, { commentId }, context) {
       const { id: userId, username } = auth(context);
       const comment = await Comment.findCommentById(commentId, false);
-
+      const { post_id } = comment;
       if (comment) {
         const hasBeenLiked = await Like.findByUserAndComment(userId, commentId);
         if (hasBeenLiked) {
-          Like.dislikeComment(userId, commentId, username);
+          await Like.dislikeComment(userId, commentId, username);
         } else if (!hasBeenLiked) {
-          Like.likeComment(userId, commentId, username);
+          await Like.likeComment(userId, commentId, username);
         }
-        const { post_id } = comment;
-        const updatedPost = await Post.findPostById(post_id);
+
+        let updatedPost = await Post.findPostById(post_id, true);
+
         return updatedPost;
       } else {
         throw new UserInputError('Post not found');
